@@ -1,0 +1,110 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="card shadow-lg border-0">
+    <div class="row g-0">
+        <!-- Vehicle Image Section -->
+        <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-3">
+            {% if ride.vehicle.vehicle_image %}
+                <img src="{{ ride.vehicle.vehicle_image.url }}"
+                     alt="Vehicle Image"
+                     class="img-fluid rounded shadow-sm" style="max-height: 280px;">
+            {% else %}
+                <img src="https://cdn-icons-png.flaticon.com/512/3202/3202926.png"
+                     alt="No Image"
+                     class="img-fluid" style="max-height: 200px;">
+            {% endif %}
+        </div>
+
+        <!-- Ride Information Section -->
+        <div class="col-md-7 p-4">
+            <h3 class="text-success fw-bold mb-3">
+                <i class="bi bi-geo-alt-fill"></i> {{ ride.origin_address }}
+                <span class="text-dark">→</span>
+                {{ ride.destination_address }}
+            </h3>
+
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item">
+                    <i class="bi bi-calendar-event text-success"></i>
+                    <strong>Departure:</strong> {{ ride.departure_time|date:"M d, Y H:i" }}
+                </li>
+                <li class="list-group-item">
+                    <i class="bi bi-people text-success"></i>
+                    <strong>Available Seats:</strong> {{ ride.available_seats }}
+                </li>
+                <li class="list-group-item">
+                    <i class="bi bi-cash-coin text-success"></i>
+                    <strong>Rate:</strong> ${{ ride.rate }} per seat
+                </li>
+                <li class="list-group-item">
+                    <i class="bi bi-cloud-check text-success"></i>
+                    <strong>Estimated CO₂ Saved:</strong> {{ ride.co2_saved }} kg per seat
+                </li>
+            </ul>
+
+            <hr>
+
+            <h5 class="text-primary mt-3"><i class="bi bi-car-front-fill"></i> Vehicle Details</h5>
+            <p class="mb-1"><strong>Vehicle:</strong> {{ ride.vehicle.vehicle_name }}</p>
+            <p class="mb-1"><strong>License Plate:</strong> {{ ride.vehicle.license_plate }}</p>
+            <p>
+                <strong>Electric Vehicle:</strong>
+                {% if ride.vehicle.is_electric %}
+                    <span class="badge bg-success">Yes</span>
+                {% else %}
+                    <span class="badge bg-secondary">No</span>
+                {% endif %}
+            </p>
+
+            <hr>
+
+            <!-- Driver Profile Section  -->
+            <h5 class="text-primary mt-3"><i class="bi bi-person-badge-fill"></i> Driver Information</h5>
+            <a href="{% url 'driver_rides' ride.driver.id %}" class="text-decoration-none text-dark">
+                <div class="card p-3 bg-light shadow-sm hover-shadow">
+                    <div class="d-flex align-items-center">
+                        <img src="{% if ride.driver.profile_picture %}
+                        {{ ride.driver.profile_picture.url }}
+                      {% else %}
+                        https://cdn-icons-png.flaticon.com/512/149/149071.png
+                      {% endif %}"
+                             alt="Driver Profile" class="rounded-circle me-3" width="70" height="70">
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ ride.driver.user.get_full_name }}</h6>
+                            <p class="mb-0 small">
+                                <i class="bi bi-envelope text-success"></i> {{ ride.driver.user.email }}<br>
+                                <i class="bi bi-telephone text-success"></i>
+                                {% if ride.driver.phone_number %}
+                                    {{ ride.driver.phone_number }}
+                                {% else %}
+                                    <span class="text-muted">Not provided</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+
+
+            <!-- Booking Section -->
+            {% if user.is_authenticated %}
+                {% if ride.available_seats > 0 %}
+                    <a href="{% url 'book_ride' ride.id %}" class="btn btn-success btn-lg w-100 mt-3">
+                        <i class="bi bi-cart-check"></i> Book Now for ${{ ride.rate }} / seat
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary btn-lg w-100 mt-3" disabled>
+                        <i class="bi bi-x-circle"></i> Fully Booked
+                    </button>
+                {% endif %}
+            {% else %}
+                <p class="text-muted mt-3">
+                    Please <a href="{% url 'login' %}">login</a> to book a ride.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

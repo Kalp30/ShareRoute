@@ -1,0 +1,100 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Post a Ride</h4>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Origin -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Origin Address</label>
+                        {{ form.origin_address }}
+                    </div>
+
+                    <!-- Destination -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-flag-fill me-2"></i>Destination Address</label>
+                        {{ form.destination_address }}
+                    </div>
+
+                    <!-- Departure Time -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-calendar-event-fill me-2"></i>Departure Time</label>
+                        {{ form.departure_time }}
+                    </div>
+
+                    <!-- Available Seats -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-people-fill me-2"></i>Available Seats</label>
+                        {{ form.available_seats }}
+                    </div>
+
+                    <!-- Vehicle Selection -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-car-front-fill me-2"></i>Select Vehicle</label>
+                        {{ form.vehicle }}
+                    </div>
+
+                    <!-- Rate -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-cash-coin me-2"></i>Rate (per seat in $)</label>
+                        {{ form.rate }}
+                    </div>
+
+                    <!-- Distance -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-signpost-2-fill me-2"></i>Estimated Distance
+                            (km)</label>
+                        {{ form.distance_km }}
+                    </div>
+
+                    <!-- CO2 Saved (calculated, per seat) -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-cloud-check-fill me-2"></i>
+                            Estimated CO₂ Saved (kg / seat)
+                        </label>
+                        <input type="text" class="form-control" id="co2Saved" readonly>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-send-fill me-2"></i>Post Ride
+                    </button>
+                </form>
+            </div>
+
+            <div class="card-footer text-center bg-light">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check me-1"></i>Passengers will be able to book after posting.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const distanceInput = document.querySelector("[name='distance_km']");
+            const co2SavedInput = document.getElementById("co2Saved");
+
+            function updateCO2() {
+                const distance = parseFloat(distanceInput.value) || 0;
+                const co2 = (distance * 0.120).toFixed(2);
+                co2SavedInput.value = co2;
+            }
+
+            distanceInput.addEventListener("input", updateCO2);
+            updateCO2();
+        });
+    </script>
+
+
+{% endblock %}

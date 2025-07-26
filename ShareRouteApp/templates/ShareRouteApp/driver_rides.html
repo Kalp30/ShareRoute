@@ -1,0 +1,59 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="card shadow p-4">
+    <div class="d-flex align-items-center mb-4">
+        <img src="{% if driver.profile_picture %}
+                    {{ driver.profile_picture.url }}
+                  {% else %}
+                    https://cdn-icons-png.flaticon.com/512/149/149071.png
+                  {% endif %}"
+             class="rounded-circle me-3" width="80" height="80" alt="Driver Profile">
+        <div>
+            <h4 class="mb-0">{{ driver.user.get_full_name }}</h4>
+            <p class="mb-0 text-muted">{{ driver.user.email }}</p>
+            <p class="mb-0 text-muted">{{ driver.phone_number }}</p>
+        </div>
+    </div>
+
+    <hr>
+    <h5 class="text-success">All Rides by {{ driver.user.get_full_name }}</h5>
+
+    {% if rides %}
+        <div class="row">
+            {% for ride in rides %}
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm h-100
+                        {% if ride.departure_time < now %}border-danger{% else %}border-success{% endif %}">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ ride.origin_address }} → {{ ride.destination_address }}</h6>
+                            <p class="card-text small">
+                                <strong>Departure:</strong> {{ ride.departure_time|date:"M d, Y H:i" }}<br>
+                                <strong>Rate:</strong> ${{ ride.rate|floatformat:2 }} per seat<br>
+                                <strong>Seats Available:</strong> {{ ride.available_seats }}<br>
+                                <strong>Vehicle:</strong> {{ ride.vehicle.vehicle_name }}
+                                {% if ride.vehicle.is_electric %}
+                                    <span class="badge bg-success">EV</span>
+                                {% endif %}
+                            </p>
+
+                            {% if ride.departure_time < now %}
+                                <span class="badge bg-danger">Past Ride</span>
+                            {% else %}
+                                <span class="badge bg-success">Upcoming Ride</span>
+                            {% endif %}
+
+                            <br><br>
+                            <a href="{% url 'ride_detail' ride.id %}" class="btn btn-outline-primary btn-sm">
+                                View Ride
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">This driver has no rides posted yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-5 fw-bold text-success">Find Your Ride</h1>
+            <p class="fs-5 text-muted">
+                Save money, travel together, and help reduce carbon emissions by sharing rides with others.
+            </p>
+            <a href="#rides" class="btn btn-success btn-lg px-4">Browse Rides</a>
+        </div>
+    </div>
+
+
+    <!-- Search Form -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h4 class="text-success mb-3"><i class="bi bi-search"></i> Search Rides</h4>
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="origin" class="form-control" placeholder="Origin Address"
+       value="{{ request.GET.origin|default:last_search.origin }}">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="destination" class="form-control" placeholder="Destination Address"
+       value="{{ request.GET.destination|default:last_search.destination }}">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date" class="form-control"
+       value="{{ request.GET.date|default:last_search.date }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-center">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="ev_only" id="ev_only"
+       {% if request.GET.ev_only or last_search.ev_only %}checked{% endif %}>
+                    <label class="form-check-label" for="ev_only">EV Only</label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+            <div class="col-md-12">
+                <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm mt-2">Clear Filters</a>
+            </div>
+        </form>
+    </div>
+
+    {% if last_search.origin or last_search.destination or last_search.date or last_search.ev_only %}
+        <div class="alert alert-info">
+            <i class="bi bi-clock-history"></i>
+            Last searched:
+            {{ last_search.origin|default:"Any" }} →
+            {{ last_search.destination|default:"Any" }}
+            {% if last_search.date %} on {{ last_search.date }}{% endif %}
+            {% if last_search.ev_only %}(EV only){% endif %}
+        </div>
+    {% endif %}
+
+    <!-- Recently Viewed Rides -->
+    {% if not search_performed and recently_viewed_rides %}
+        <div class="card shadow-sm p-4 mb-4">
+            <h5 class="text-success mb-3"><i class="bi bi-clock-history"></i> Recently Viewed Rides</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-success">
+                    <tr>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Departure</th>
+                        <th>Rate</th>
+                        <th>Seats</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ride in recently_viewed_rides %}
+                        <tr>
+                            <td><strong>{{ ride.origin_address }}</strong></td>
+                            <td>{{ ride.destination_address }}</td>
+                            <td>{{ ride.departure_time|date:"M d, Y H:i" }}</td>
+                            <td class="text-success fw-bold">${{ ride.rate }}</td>
+                            <td>{{ ride.available_seats }}</td>
+                            <td>
+                                <a href="{% url 'ride_detail' ride.id %}" class="btn btn-sm btn-outline-success">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if search_performed %}
+        {% if total_results %}
+            <p class="text-muted"><strong>Showing {{ total_results }} Ride{{ total_results|pluralize }}</strong></p>
+        {% endif %}
+
+        <div id="rides" class="row">
+            {% for ride in rides %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-lg border-0">
+                        <div class="card-header bg-success text-white">
+                            <strong>{{ ride.origin_address }}</strong> → <strong>{{ ride.destination_address }}</strong>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text mb-1">
+                                <i class="bi bi-calendar-event text-success"></i>
+                                <strong>Departure:</strong> {{ ride.departure_time|date:"M d, Y H:i" }}
+                            </p>
+                            <p class="card-text mb-1">
+                                <i class="bi bi-people text-success"></i>
+                                <strong>Seats Available:</strong> {{ ride.available_seats }}
+                            </p>
+                            <p class="card-text mb-1">
+                                <i class="bi bi-person-circle text-success"></i>
+                                <strong>Driver:</strong> {{ ride.driver.user.get_full_name }}
+                            </p>
+                            <p class="card-text mb-1">
+                                <i class="bi bi-cash-coin text-success"></i>
+                                <strong>Rate:</strong> ${{ ride.rate }} <small class="text-muted">/ seat</small>
+                            </p>
+                        </div>
+                        <div class="card-footer text-center bg-light">
+                            <a href="{% url 'ride_detail' ride.id %}" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-info-circle"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">No rides available.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

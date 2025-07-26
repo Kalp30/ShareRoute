@@ -1,0 +1,177 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: #f0f8f5;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Gradient navbar background */
+.navbar-custom {
+    background: linear-gradient(90deg, #006633, #00994d);
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.15);
+    font-weight: 600;
+}
+
+.navbar-custom .navbar-brand {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    color: #d4f5d4;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-custom .nav-link {
+    color: #d4f5d4;
+    font-size: 1.1rem;
+    margin-right: 0.8rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link.active {
+    color: #fff;
+    text-shadow: 0 0 8px #a8ffb1;
+}
+
+/* Profile dropdown */
+.dropdown-menu {
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.2);
+}
+
+.dropdown-item:hover {
+    background-color: #007a29;
+    color: #d4f5d4 !important;
+}
+
+/* Profile button */
+.btn-profile {
+    background: #d4f5d4;
+    color: #006633;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 0.2rem 0.8rem;
+    transition: background 0.3s ease;
+}
+
+.btn-profile:hover {
+    background: #b1e2a0;
+    color: #004d1a;
+}
+
+/* Profile img */
+.profile-img {
+    border: 2px solid #006633;
+    box-shadow: 0 0 5px #00994d;
+}
+
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.register-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+}
+
+.register-form input,
+.register-form select {
+    border-radius: 6px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.navbar-nav .nav-link.active {
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    background-color: #28a745;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer i {
+    font-size: 1.2rem;
+    transition: color 0.2s ease-in-out;
+}
+
+footer i:hover {
+    color: #d4edda; /* light green on hover */
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    transition: 0.3s ease;
+}
+
+.card-header {
+    font-size: 1rem;
+}
+
+.hero {
+    background: linear-gradient(90deg, #28a745, #4bbf73);
+    color: white;
+    padding: 50px;
+    border-radius: 10px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.card img {
+    border-radius: 8px;
+}
+
+.btn-success {
+    font-size: 1.1rem;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.badge {
+    font-size: 0.9rem;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 4px 15px rgba(0, 128, 0, 0.3) !important;
+    transition: 0.3s;
+}
+
+.card.border-danger {
+    opacity: 0.8;
+}
+
+form input, form select {
+    border-radius: 6px !important;
+}

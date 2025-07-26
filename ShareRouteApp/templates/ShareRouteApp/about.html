@@ -1,0 +1,58 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: auto;">
+
+    <div class="card shadow border-0 rounded-4 p-5 my-5" style="background: #e9f7ef;">
+        <h2 class="text-success text-center mb-3 fw-bold" style="letter-spacing: 2px;">About ShareRoute</h2>
+        <p class="lead text-muted text-center fst-italic">
+            Making transportation greener, one shared ride at a time!
+        </p>
+
+        <hr class="border-success opacity-50 my-4">
+
+        <!-- Who We Are -->
+        <div class="mb-5">
+            <h4 class="text-success mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-people-fill fs-3"></i> Who We Are
+            </h4>
+            <p class="text-secondary fs-5">
+                ShareRoute is a community-driven ride-sharing platform focused on reducing carbon emissions
+                and promoting eco-friendly transportation. By connecting drivers with passengers heading
+                in the same direction, we help save fuel, reduce traffic congestion, and contribute to a
+                cleaner planet.
+            </p>
+        </div>
+
+        <!-- Our Mission -->
+        <div class="mb-5">
+            <h4 class="text-success mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-flag-fill fs-3"></i> Our Mission
+            </h4>
+            <p class="text-secondary fs-5">
+                Our mission is to provide an affordable, reliable, and environmentally responsible way
+                to travel. Whether you are a passenger looking for a ride or a driver with an extra seat,
+                GreenRide helps you share the journey and save the planet.
+            </p>
+        </div>
+
+        <!-- Contact Us -->
+        <div>
+            <h4 class="text-success mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-envelope-paper-fill fs-3"></i> Contact Us
+            </h4>
+            <p class="text-secondary fs-5">
+                <i class="bi bi-envelope-fill text-success me-2"></i>
+                <a href="mailto:support@greenride.com" class="text-decoration-none text-success fw-semibold">support@shareroute.com</a><br>
+                <i class="bi bi-telephone-fill text-success me-2"></i> +1 (123) 456-7890
+            </p>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'index' %}" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">
+                <i class="bi bi-arrow-left-circle me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

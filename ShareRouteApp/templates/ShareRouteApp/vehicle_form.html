@@ -1,0 +1,62 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="mb-0"><i class="bi bi-car-front-fill me-2"></i>Add Your Vehicle</h4>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Vehicle Name -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-car-front-fill me-2"></i>Vehicle Name</label>
+                        {{ form.vehicle_name }}
+                    </div>
+
+                    <!-- License Plate -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-card-text me-2"></i>License Plate</label>
+                        {{ form.license_plate }}
+                    </div>
+
+                    <!-- Electric Vehicle Checkbox -->
+                    <div class="form-check mb-3">
+                        {{ form.is_electric }}
+                        <label class="form-check-label">
+                            <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Electric Vehicle?
+                        </label>
+                    </div>
+
+                    <!-- Vehicle Image -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-image-fill me-2"></i>Vehicle Image</label>
+                        {{ form.vehicle_image }}
+                    </div>
+
+                    <!-- Vehicle Registration Document -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-file-earmark-text-fill me-2"></i>Registration Document</label>
+                        {{ form.vehicle_document }}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-save2 me-2"></i>Save Vehicle
+                    </button>
+                </form>
+            </div>
+
+            <div class="card-footer text-center bg-light">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check me-1"></i>Your information is secure with GreenRide.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

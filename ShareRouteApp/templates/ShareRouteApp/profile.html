@@ -1,0 +1,117 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+    {% if last_visit_time %}
+        <p class="small text-muted">
+            <i class="bi bi-clock-history me-1"></i>
+            Last visited: {{ last_visit_time }}
+        </p>
+    {% endif %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>My Profile</h4>
+            </div>
+
+            <div class="card-body p-4">
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Profile Picture Display -->
+                <div class="text-center mb-4">
+                    <img src="{% if user.userprofile.profile_picture %}{{ user.userprofile.profile_picture.url }}{% else %}https://cdn-icons-png.flaticon.com/512/149/149071.png{% endif %}"
+                         alt="Profile Picture" class="rounded-circle shadow" width="130" height="130" id="profileImagePreview">
+                    <p class="text-muted mt-2">{{ user.username }}</p>
+                </div>
+
+                <!-- Profile Form -->
+                <form method="post" enctype="multipart/form-data" id="profileForm">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-person-fill me-2"></i>First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-person-fill me-2"></i>Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-envelope-fill me-2"></i>Email</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-telephone-fill me-2"></i>Phone Number</label>
+                        {{ form.phone_number }}
+                    </div>
+
+                    <!-- Profile Picture Upload (Hidden Initially) -->
+                    <div class="mb-3 d-none" id="profilePictureField">
+                        <label class="form-label"><i class="bi bi-image-fill me-2"></i>Change Profile Picture</label>
+                        {{ form.profile_picture }}
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.is_driver }}
+                        <label class="form-check-label"><i class="bi bi-car-front-fill me-2"></i>Register as Driver</label>
+                    </div>
+
+                    <!-- Buttons -->
+                    <button type="button" class="btn btn-primary w-100" id="editBtn">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                    </button>
+                    <button type="submit" class="btn btn-success w-100 d-none mt-2" id="saveBtn">
+                        <i class="bi bi-check-circle-fill me-2"></i>Save Changes
+                    </button>
+                </form>
+            </div>
+
+            <div class="card-footer text-center bg-light">
+                <small class="text-muted">
+                    <i class="bi bi-shield-lock me-1"></i>Your information is safe with us.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("profileForm");
+        const editBtn = document.getElementById("editBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const profilePictureField = document.getElementById("profilePictureField");
+
+        // Initially disable all form fields
+        form.querySelectorAll("input, select").forEach(field => {
+            if (field.type !== "hidden" && field.name !== "csrfmiddlewaretoken") {
+                field.disabled = true;
+            }
+        });
+
+        // Enable editing when Edit Profile is clicked
+        editBtn.addEventListener("click", function() {
+            form.querySelectorAll("input, select").forEach(field => {
+                if (field.type !== "hidden" && field.name !== "csrfmiddlewaretoken") {
+                    field.disabled = false;
+                }
+            });
+
+            // Show profile picture upload field
+            profilePictureField.classList.remove("d-none");
+
+            editBtn.classList.add("d-none");
+            saveBtn.classList.remove("d-none");
+        });
+    });
+</script>
+{% endblock %}

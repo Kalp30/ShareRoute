@@ -1,0 +1,70 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="card shadow p-4">
+    <h3 class="text-success mb-4 text-center">
+        <i class="bi bi-clock-history me-2"></i>Your Booking History
+    </h3>
+
+    {% if bookings %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-success">
+                    <tr>
+                        <th><i class="bi bi-geo-alt-fill me-1"></i>Ride</th>
+                        <th><i class="bi bi-calendar-event me-1"></i>Departure</th>
+                        <th><i class="bi bi-cash-coin me-1"></i>Rate<small class="text-muted">/ seat</small></th>
+                        <th><i class="bi bi-person-fill me-1"></i>Driver</th>
+                        <th><i class="bi bi-clock me-1"></i>Booked On</th>
+                        <th><i class="bi bi-gear-fill me-1"></i>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'ride_detail' booking.ride.id %}" class="text-decoration-none text-success fw-bold">
+                                {{ booking.ride.origin_address }} → {{ booking.ride.destination_address }}
+                            </a>
+                        </td>
+                        <td>{{ booking.ride.departure_time|date:"M d, Y H:i" }}</td>
+                        <td>
+                            ${{ booking.ride.rate }}
+                        </td>
+                        <td>
+                            <a href="{% url 'driver_rides' booking.ride.driver.id %}" class="text-decoration-none text-success fw-bold">
+                                {{ booking.ride.driver.user.get_full_name }}
+                            </a>
+                            {% if booking.ride.vehicle.is_electric %}
+                                <span class="badge bg-success ms-1">EV</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ booking.booking_time|date:"M d, Y H:i" }}</td>
+                        <td>
+                            {% if booking.ride.departure_time > now %}
+                                <form method="post" action="{% url 'cancel_booking' booking.id %}"
+                                      onsubmit="return confirm('Are you sure you want to cancel this booking?');"
+                                      class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-x-circle me-1"></i>Cancel
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-check2-circle me-1"></i>Completed
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle me-2"></i>You haven't booked any rides yet.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

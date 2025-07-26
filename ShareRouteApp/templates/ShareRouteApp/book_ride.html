@@ -1,0 +1,96 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-ticket-detailed"></i> Book Your Ride</h4>
+            </div>
+            <div class="card-body">
+                <!-- Ride Information -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h5 class="text-success fw-bold">
+                            {{ ride.origin_address }} → {{ ride.destination_address }}
+                        </h5>
+                        <p class="text-muted mb-1">
+                            <strong><i class="bi bi-calendar-event"></i> Departure:</strong>
+                            {{ ride.departure_time|date:"M d, Y H:i" }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <strong><i class="bi bi-person-check"></i> Driver:</strong>
+                            {{ ride.driver.user.get_full_name }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <strong><i class="bi bi-car-front"></i> Vehicle:</strong>
+                            {{ ride.vehicle.vehicle_name }}
+                            {% if ride.vehicle.is_electric %}
+                                <span class="badge bg-success ms-1">EV</span>
+                            {% endif %}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <strong><i class="bi bi-people"></i> Available Seats:</strong>
+                            {{ ride.available_seats }}
+                        </p>
+                        <p class="text-muted fw-bold text-primary">
+                            <strong><i class="bi bi-cash-coin"></i> Rate:</strong> ${{ ride.rate }} per seat
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        {% if ride.vehicle.vehicle_image %}
+                            <img src="{{ ride.vehicle.vehicle_image.url }}"
+                                 alt="Vehicle Image"
+                                 class="img-fluid rounded shadow-sm"
+                                 style="max-height: 120px;">
+                        {% else %}
+                            <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png"
+                                 alt="Vehicle"
+                                 class="img-fluid rounded shadow-sm"
+                                 style="max-height: 120px;">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Booking Form -->
+                <h5 class="text-primary mb-3"><i class="bi bi-pencil-square"></i> Confirm Your Booking</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.seats_booked.label_tag }}
+                        {{ form.seats_booked }}
+                    </div>
+
+                    <!-- Total Price Display -->
+                    <div class="alert alert-info d-flex justify-content-between">
+                        <span><i class="bi bi-calculator"></i> Total Price:</span>
+                        <strong id="totalPrice">$0.00</strong>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-check2-circle"></i> Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const seatsInput = document.querySelector("[name='seats_booked']");
+        const totalPriceElement = document.getElementById("totalPrice");
+        const rate = {{ ride.rate|floatformat:2 }};
+
+        function updateTotal() {
+            const seats = parseInt(seatsInput.value) || 0;
+            totalPriceElement.textContent = `$${(seats * rate).toFixed(2)}`;
+        }
+
+        seatsInput.addEventListener("input", updateTotal);
+        updateTotal(); // initialize on load
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'ShareRouteApp/base.html' %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <h3 class="text-center mb-4 text-success">Create Your Account</h3>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="register-form">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">First Name</label>
+                {{ form.first_name }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                {{ form.last_name }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Profile Picture</label>
+                {{ form.profile_picture }}
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.is_driver }}
+                <label class="form-check-label">Register as Driver</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                {{ form.password1 }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                {{ form.password2 }}
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Register</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'login' %}" class="text-decoration-none">Already have an account? Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

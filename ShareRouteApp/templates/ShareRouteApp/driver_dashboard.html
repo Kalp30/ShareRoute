@@ -1,0 +1,129 @@
+{% extends 'ShareRouteApp/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<h2 class="text-success fw-bold mb-4"><i class="bi bi-speedometer2"></i> Driver Dashboard</h2>
+
+
+<!-- Action Buttons -->
+<div class="d-flex justify-content-start mb-4 gap-2">
+    <a href="{% url 'add_vehicle' %}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Add Vehicle
+    </a>
+    <a href="{% url 'post_ride' %}" class="btn btn-primary">
+        <i class="bi bi-car-front"></i> Post Ride
+    </a>
+</div>
+
+<!-- Rides Section -->
+<h4 class="text-primary fw-bold mb-3"><i class="bi bi-map"></i> Your Rides</h4>
+<div class="row">
+    {% for r in rides %}
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ r.origin_address }} → {{ r.destination_address }}</h5>
+                <p class="card-text">
+                    <strong>Departure:</strong> {{ r.departure_time|date:"M d, Y H:i" }}<br>
+                    <strong>Seats Left:</strong> <span class="badge bg-info">{{ r.available_seats }}</span><br>
+                    <strong>Rate:</strong> <span class="text-success fw-bold">${{ r.rate }}</span> <small class="text-muted">/ seat</small>
+                </p>
+                <a href="{% url 'driver_bookings' r.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-people"></i> View Bookings
+                </a>
+
+                {% if r.departure_time > now %}
+                    <a href="{% url 'edit_ride' r.id %}" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    <a href="{% url 'delete_ride' r.id %}"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Are you sure you want to delete this ride? All bookings will be canceled.');">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                {% else %}
+                    <span class="badge bg-secondary">Ride Completed</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <p class="text-muted">No rides posted yet.</p>
+    {% endfor %}
+</div>
+
+
+<hr class="my-4">
+
+<!-- Vehicles Section -->
+<h4 class="text-primary fw-bold mb-3"><i class="bi bi-truck-front"></i> Your Vehicles</h4>
+<div class="row">
+    {% for v in vehicles %}
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm">
+            {% if v.vehicle_image %}
+                <img src="{{ v.vehicle_image.url }}"
+                     class="card-img-top"
+                     alt="Vehicle Image"
+                     style="height:180px; object-fit:cover; cursor:pointer;"
+                     data-bs-toggle="modal"
+                     data-bs-target="#imageModal{{ v.id }}">
+            {% else %}
+                <div class="bg-light text-center py-4 text-muted">No Image</div>
+            {% endif %}
+
+            <div class="card-body">
+                <h5 class="card-title">{{ v.vehicle_name }}</h5>
+                <p class="card-text">
+                    <strong>License:</strong> {{ v.license_plate }}<br>
+                    <strong>EV:</strong> {% if v.is_electric %}
+                        <span class="badge bg-success">Yes</span>
+                    {% else %}
+                        <span class="badge bg-secondary">No</span>
+                    {% endif %}
+                </p>
+
+                {% if v.vehicle_document %}
+                    <a href="{{ v.vehicle_document.url }}"
+                       class="btn btn-sm btn-outline-secondary" download>
+                       <i class="bi bi-download"></i> Registration Doc
+                    </a>
+                {% else %}
+                    <p class="small text-muted">No Document</p>
+                {% endif %}
+
+                <div class="mt-3">
+                    <a href="{% url 'edit_vehicle' v.id %}" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    <a href="{% url 'delete_vehicle' v.id %}"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Are you sure you want to delete this vehicle?');">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Larger Image -->
+    <div class="modal fade" id="imageModal{{ v.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ v.vehicle_name }} ({{ v.license_plate }})</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ v.vehicle_image.url }}" alt="Vehicle Image Large" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <p class="text-muted">No vehicles added yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
